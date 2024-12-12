@@ -1,16 +1,22 @@
 # Creates Docker Container
-# docker run -it -p 13000:3000 --name test besta/codexdocx:2.2.3
-# docker build -t besta/codexdocx:2.2.3 -f docker/Dockerfile.prod .
+# docker run -it -p 80:80 -e URL_prefix="/test" --name test versadesk/codexdocx:2.2.3
+# docker build -t versadesk/codexdocx:2.2.3 -f docker/Dockerfile.prod .
 
 # Stage 1 - build
-FROM node:16.14.0-alpine3.15 as build
+FROM node:16.14.0 as build
 
 ## Install build toolchain, install node deps and compile native add-ons
-RUN apk add --no-cache python3 make g++ git
+RUN apt update && \
+    apt install -y \
+    python3 make g++ git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
+COPY docker/versadesk.conf ./versadesk.conf
+COPY docker/nginx.conf ./nginx.conf
 
 RUN yarn install --production
 
@@ -23,7 +29,21 @@ COPY . .
 RUN yarn build-all
 
 # Stage 2 - make final image
-FROM node:16.14.0-alpine3.15
+FROM node:16.14.0
+
+RUN apt update && \
+    apt install -y \
+    nginx gettext && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /usr/src/app/versadesk.conf /etc/nginx/versadesk.conf.template
+COPY --from=build /usr/src/app/nginx.conf /etc/nginx/nginx.conf
+
+RUN chown -R 1000:1000 /etc/nginx /var/log/nginx /var/lib/nginx && \
+    touch /run/nginx.pid && \
+    chown 1000:1000 /run/nginx.pid && \
+    rm etc/nginx/sites-enabled/*
 
 WORKDIR /usr/src/app
 
@@ -32,6 +52,8 @@ COPY --from=build /usr/src/app/prod_node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/public ./public
 
+
 ENV NODE_ENV=production
 
-CMD ["node", "dist/backend/app.js"]
+CMD ["sh", "-c", "envsubst '${URL_prefix}' < /etc/nginx/versadesk.conf.template > /etc/nginx/conf.d/default.conf && nginx && node dist/backend/app.js"]
+

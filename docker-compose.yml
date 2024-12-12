@@ -1,9 +1,11 @@
 version: "3.2"
 services:
   docs:
-    image: ghcr.io/codex-team/codex.docs:v2.2.3
+    image: versadesk/codexdocx:2.2.3
     ports:
-      - "13000:3000"
+      - "80:80"
+    environment:
+      - URL_prefix=/result/test/proxy # /proxy must add in the end.
     volumes:
       - ./uploads:/usr/src/app/uploads
       - ./db:/usr/src/app/db

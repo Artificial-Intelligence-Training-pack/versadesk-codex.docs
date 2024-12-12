@@ -7,3 +7,5 @@ src/test
 !webpack.config.js
 !tsconfig.json
 !.postcssrc
+!docker/versadesk.conf
+!docker/nginx.conf

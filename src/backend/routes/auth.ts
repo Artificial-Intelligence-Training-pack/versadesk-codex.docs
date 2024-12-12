@@ -15,6 +15,7 @@ router.get('/auth', csrfProtection, function (req: Request, res: Response) {
   res.render('auth', {
     title: 'Login page',
     csrfToken: req.csrfToken(),
+    URL_prefix,
   });
 });
 
@@ -28,6 +29,7 @@ router.post('/auth', parseForm, csrfProtection, async (req: Request, res: Respon
         title: 'Login page',
         header: 'Password not set',
         csrfToken: req.csrfToken(),
+        URL_prefix,
       });
 
       return;
@@ -38,6 +40,7 @@ router.post('/auth', parseForm, csrfProtection, async (req: Request, res: Respon
         title: 'Login page',
         header: 'Wrong password',
         csrfToken: req.csrfToken(),
+        URL_prefix,
       });
 
       return;
@@ -60,6 +63,7 @@ router.post('/auth', parseForm, csrfProtection, async (req: Request, res: Respon
       title: 'Login page',
       header: 'Password not set',
       csrfToken: req.csrfToken(),
+      URL_prefix,
     });
 
     return;
