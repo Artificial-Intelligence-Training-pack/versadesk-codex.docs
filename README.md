@@ -22,6 +22,10 @@ It's super easy to install and use.
 - 🤙 Simple configuration
 - ⚙️ Tune UI as you need. Collapse sections, hide the Sidebar
 
+## Versadesk version
+
+- ADD URL prefix support.
+
 ## Demo
 
 Here is our [Demo Application](https://docs-demo.codex.so/) where you can try CodeX Docs in action.
@@ -59,7 +63,7 @@ yarn && yarn start
 #### Using Docker
 
 ```
-docker-compose build
+docker build -t versadesk/codexdocx:2.2.3 -f docker/Dockerfile.prod .
 docker-compose up
 ```
 
