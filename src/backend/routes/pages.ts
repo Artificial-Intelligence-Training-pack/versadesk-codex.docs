@@ -7,7 +7,7 @@ import PagesFlatArray from '../models/pagesFlatArray.js';
 import { toEntityId } from '../database/index.js';
 
 const router = express.Router();
-
+const URL_prefix = process.env.URL_prefix || '/';;
 /**
  * Create new page form
  */
@@ -20,6 +20,7 @@ router.get('/page/new', verifyToken, allowEdit, async (req: Request, res: Respon
     res.render('pages/form', {
       pagesAvailableGrouped,
       page: null,
+      URL_prefix,
     });
   } catch (error) {
     res.status(404);
@@ -48,6 +49,7 @@ router.get('/page/edit/:id', verifyToken, allowEdit, async (req: Request, res: R
       page,
       parentsChildrenOrdered,
       pagesAvailableGrouped,
+      URL_prefix,
     });
   } catch (error) {
     res.status(404);
@@ -68,13 +70,14 @@ router.get('/page/:id', verifyToken, async (req: Request, res: Response, next: N
 
     const previousPage = await PagesFlatArray.getPageBefore(pageId);
     const nextPage = await PagesFlatArray.getPageAfter(pageId);
-
+    
     res.render('pages/page', {
       page,
       pageParent,
       config: req.app.locals.config,
       previousPage,
       nextPage,
+      URL_prefix,
     });
   } catch (error) {
     res.status(404);

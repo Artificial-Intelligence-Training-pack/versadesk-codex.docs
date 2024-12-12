@@ -8,7 +8,7 @@ import HttpException from '../exceptions/httpException.js';
 
 
 const router = express.Router();
-
+const URL_prefix = process.env.URL_prefix || '/';;
 /**
  * GET /*
  *
@@ -44,6 +44,7 @@ router.get('*', verifyToken, async (req: Request, res: Response) => {
           previousPage,
           nextPage,
           config: req.app.locals.config,
+          URL_prefix, // Pass root path to template
         });
       }
     }

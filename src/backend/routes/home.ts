@@ -5,6 +5,7 @@ import Pages from '../controllers/pages.js';
 
 
 const router = express.Router();
+const URL_prefix = process.env.URL_prefix || '/';;
 
 /* GET home page. */
 router.get('/', verifyToken, async (req: Request, res: Response) => {

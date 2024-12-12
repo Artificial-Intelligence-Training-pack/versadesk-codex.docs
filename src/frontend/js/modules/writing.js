@@ -146,10 +146,27 @@ export default class Writing {
   /**
    * Handler for clicks on the Save button
    */
+  async getDynamicRootPath() {
+    // 獲取當前腳本的完整 URL
+    const fullPath = window.location.pathname; // 獲取當前完整路徑
+    const pathParts = fullPath.split('/'); // 拆分路徑
+
+    // 假設腳本通常在根目錄中的某個子目錄
+    // 找到代理根目錄的索引，例如 "proxy" 之前的路徑
+    const proxyIndex = pathParts.findIndex(part => part === 'proxy');
+    if (proxyIndex > -1) {
+      return pathParts.slice(0, proxyIndex + 1).join('/') + '/'; // 返回直到 "proxy" 的完整根目錄
+    }
+
+    // 如果找不到 "proxy"，返回根路徑 "/"
+    return '/';
+  }
+
   async saveButtonClicked() {
     try {
       const writingData = await this.getData();
-      const endpoint = this.page ? '/api/page/' + this.page._id : '/api/page';
+      const rootPath = await this.getDynamicRootPath();
+      const endpoint = this.page ? `${rootPath}api/page/${this.page._id}` : `${rootPath}api/page`;
 
       try {
         let response = await fetch(endpoint, {
@@ -163,7 +180,9 @@ export default class Writing {
         response = await response.json();
 
         if (response.success) {
-          window.location.pathname = response.result.uri ? response.result.uri : '/page/' + response.result._id;
+          // window.location.pathname = response.result.uri ? response.result.uri : '/page/' + response.result._id;
+          const pageUri = response.result.uri ? response.result.uri : `page/${response.result._id}`;
+          window.location.pathname = `${rootPath}${pageUri}`;
         } else {
           alert(response.error);
           console.log('Validation failed:', response.error);
@@ -182,7 +201,8 @@ export default class Writing {
    */
   async removeButtonClicked() {
     try {
-      const endpoint = this.page ? '/api/page/' + this.page._id : '';
+      const rootPath = await this.getDynamicRootPath();
+      const endpoint = this.page ? `${rootPath}api/page/${this.page._id}` : '';
 
       let response = await fetch(endpoint, {
         method: 'DELETE'
@@ -191,9 +211,9 @@ export default class Writing {
       response = await response.json();
       if (response.success) {
         if (response.result && response.result._id) {
-          document.location = '/page/' + response.result._id;
+          document.location = `${rootPath}page/${response.result._id}`;
         } else {
-          document.location = '/';
+          document.location = `${rootPath}`;
         }
       } else {
         alert(response.error);

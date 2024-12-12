@@ -18,6 +18,7 @@ import routes from './routes/index.js';
 import HttpException from './exceptions/httpException.js';
 
 const debug = Debug.debug('codex.docs:server');
+const URL_prefix = process.env.URL_prefix || '/';;
 
 /**
  * Get port from environment and store in Express.
@@ -94,7 +95,6 @@ function createApp(): express.Express {
   app.use('/favicon', express.static(downloadedFaviconFolder));
 
   app.use('/', routes);
-
 
   // global error handler
   app.use(function (err: unknown, req: Request, res: Response, next: NextFunction) {

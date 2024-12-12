@@ -34,6 +34,7 @@ export default class Editor {
    * @param {string} options.headerPlaceholder - placeholder for Header tool
    */
   constructor(editorConfig = {}, options = {}) {
+    const rootPath = this.getDynamicRootPath();
     const defaultConfig = {
       tools: {
         header: {
@@ -50,8 +51,8 @@ export default class Editor {
           config: {
             types: 'image/*, video/mp4',
             endpoints: {
-              byFile: '/api/transport/image',
-              byUrl: '/api/transport/fetch',
+              byFile: `${rootPath}api/transport/image`,
+              byUrl: `${rootPath}api/transport/fetch`,
             },
           },
         },
@@ -59,7 +60,7 @@ export default class Editor {
         linkTool: {
           class: LinkTool,
           config: {
-            endpoint: '/api/fetchUrl',
+            endpoint: `${rootPath}api/fetchUrl`,
           },
         },
 
@@ -130,5 +131,21 @@ export default class Editor {
    */
   save() {
     return this.editor.saver.save();
+  }
+
+  getDynamicRootPath() {
+    // 獲取當前腳本的完整 URL
+    const fullPath = window.location.pathname; // 獲取當前完整路徑
+    const pathParts = fullPath.split('/'); // 拆分路徑
+
+    // 假設腳本通常在根目錄中的某個子目錄
+    // 找到代理根目錄的索引，例如 "proxy" 之前的路徑
+    const proxyIndex = pathParts.findIndex(part => part === 'proxy');
+    if (proxyIndex > -1) {
+      return pathParts.slice(0, proxyIndex + 1).join('/') + '/'; // 返回直到 "proxy" 的完整根目錄
+    }
+
+    // 如果找不到 "proxy"，返回根路徑 "/"
+    return '/';
   }
 }

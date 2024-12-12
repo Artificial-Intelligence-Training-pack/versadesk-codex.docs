@@ -4,6 +4,7 @@ import csrf from 'csurf';
 import appConfig from '../utils/appConfig.js';
 
 const router = express.Router();
+const URL_prefix = process.env.URL_prefix || '/';;
 const csrfProtection = csrf({ cookie: true });
 const parseForm = express.urlencoded({ extended: false });
 

@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import ogs from 'open-graph-scraper';
 
 const router = express.Router();
+const URL_prefix = process.env.URL_prefix || '/';;
 
 interface ResponseData {
   success: number;

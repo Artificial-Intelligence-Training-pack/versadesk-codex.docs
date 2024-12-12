@@ -8,6 +8,7 @@ import { uploadsDriver } from '../../uploads/index.js';
 const router = Router();
 
 const storage = uploadsDriver.createStorageEngine();
+const URL_prefix = process.env.URL_prefix || '/';
 
 /**
  * Multer middleware for image uploading
@@ -45,7 +46,7 @@ const fileUploader = multer({
  */
 function getFileUrl(fileData: FileData): string {
   if (appConfig.uploads.driver === 'local') {
-    return '/uploads/' + fileData.filename;
+    return URL_prefix + '/uploads/' + fileData.filename;
   } else {
     const baseUrlWithoutTrailingSlash = appConfig.uploads.s3.baseUrl.replace(/\/+$/, '');
 
@@ -140,7 +141,7 @@ router.post('/transport/file', fileUploader, async (req: Request, res: Response)
 /**
  * Accept file url to fetch
  */
-router.post('/transport/fetch', multer().none(), async (req: Request, res: Response) => {
+router.post(URL_prefix+'/transport/fetch', multer().none(), async (req: Request, res: Response) => {
   if (!req.body.url) {
     res.status(400).json({
       success: 0,

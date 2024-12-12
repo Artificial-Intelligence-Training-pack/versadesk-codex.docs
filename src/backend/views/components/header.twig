@@ -1,27 +1,30 @@
 <header class="docs-header">
-  <a href="/" class="docs-header__logo">
-    {{ config.title | striptags }}
-  </a>
-  <ul class="docs-header__menu">
-    {% if isAuthorized == true %}
-      <li class="docs-header__menu-add docs-header__menu-add--desktop">
-        {% include 'components/button.twig' with {label: 'Add page', icon: 'plus', size: 'small', url: '/page/new'} %}
-      </li>
-      <li class="docs-header__menu-add docs-header__menu-add--mobile">
-        {% include 'components/button.twig' with {icon: 'plus', size: 'small', url: '/page/new'} %}
-      </li>
-    {% endif %}
-    {% for option in config.menu %}
-      <li>
-        <a class="docs-header__menu-link"
-          {% if option.uri %}
-            href="{{ option.uri }}"
-          {% else %}
-            href="/page/{{ option._id }}"
-          {% endif %}>
-          {{ option.title | striptags }}
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+	<a href="{{ URL_prefix }}/" class="docs-header__logo">
+		{{ config.title | striptags }}
+	</a>
+	<ul class="docs-header__menu">
+		{% if isAuthorized == true %}
+			<li class="docs-header__menu-add docs-header__menu-add--desktop">
+				{% include 'components/button.twig' with {label: 'Add page', icon: 'plus', size: 'small', url: URL_prefix ~ '/page/new'} %}
+			</li>
+			<li class="docs-header__menu-add docs-header__menu-add--mobile">
+				{% include 'components/button.twig' with {icon: 'plus', size: 'small', url: URL_prefix ~ '/page/new'} %}
+			</li>
+		{% endif %}
+		{% if isAuthorized == false %}
+			<li class="docs-header__menu-add docs-header__menu-add--desktop">
+				{% include 'components/button.twig' with {label: 'Login', size: 'small', url: URL_prefix ~ '/auth'} %}
+			</li>
+			<li class="docs-header__menu-add docs-header__menu-add--mobile">
+				{% include 'components/button.twig' with {size: 'small', url: 'auth'} %}
+			</li>
+		{% endif %}
+		{% for option in config.menu %}
+			<li>
+				<a class="docs-header__menu-link" {% if option.uri %} href="{{ option.uri }}" {% else %} href="{{ URL_prefix }}/page/{{ option._id }}" {% endif %}>
+					{{ option.title | striptags }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
 </header>

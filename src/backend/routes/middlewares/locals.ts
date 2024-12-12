@@ -7,6 +7,8 @@ import { NextFunction, Request, Response } from 'express';
  * @param res - response object
  * @param next - next function
  */
+
+const URL_prefix = process.env.URL_prefix || '/';;
 export default function allowEdit(req: Request, res: Response, next: NextFunction): void {
   if (res.locals.isAuthorized) {
     next();

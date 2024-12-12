@@ -16,4 +16,5 @@ router.use('/', pagesMiddleware, auth);
 router.use('/api', verifyToken, allowEdit, api);
 router.use('/', aliases);
 
+
 export default router;

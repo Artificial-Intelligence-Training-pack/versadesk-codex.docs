@@ -6,6 +6,7 @@ import { EntityId } from '../../database/types.js';
 import { isEntityId, isEqualIds, toEntityId } from '../../database/index.js';
 
 const router = express.Router();
+const URL_prefix = process.env.URL_prefix || '/';
 const multer = multerFunc();
 
 /**
