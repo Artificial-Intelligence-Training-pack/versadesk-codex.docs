@@ -2,6 +2,7 @@ version: "3.2"
 services:
   docs:
     image: versadesk/codexdocx:2.2.3
+    user: 1000 #should be 1000 (You need to rebuild image before change it)
     ports:
       - "80:80"
     environment:
